@@ -6,9 +6,6 @@
 # Dist
 node_modules
 dist/
-rsbuild-dist/
-rspack-dist/
-webpack-dist/
 
 # Profile
 .rspack-profile-*/
@@ -17,4 +14,3 @@ webpack-dist/
 .vscode/*
 !.vscode/extensions.json
 .idea
-
