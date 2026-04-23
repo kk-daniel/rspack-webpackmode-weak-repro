@@ -16,15 +16,25 @@ const config = {
   mode: "development",
   devtool: false,
   entry: {
-    main: "./src/index",
+    main: "./src/index.js",
   },
-  plugins: [new HtmlWebpackPlugin()],
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: "./public/index.html",
+    }),
+  ],
   output: {
     clean: true,
     path: isRunningWebpack
       ? path.resolve(__dirname, "webpack-dist")
       : path.resolve(__dirname, "rspack-dist"),
     filename: "[name].js",
+    chunkFilename: "[name].js",
+    publicPath: "auto",
+  },
+  optimization: {
+    chunkIds: "named",
+    moduleIds: "named",
   },
   experiments: {
     css: true,

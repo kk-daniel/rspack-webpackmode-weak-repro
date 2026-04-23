@@ -1,19 +1,42 @@
-# rspack-repro
+# Rspack `webpackMode: "weak"` repro
 
 - [Rspack website](https://rspack.dev/)
 - [Rspack repo](https://github.com/web-infra-dev/rspack)
 
-A GitHub template for creating a Rspack minimal reproducible example.
+This repo reproduces a difference between webpack and Rspack for dynamic imports
+with `webpackMode: "weak"`.
 
-webpack is included for comparing the outputs.
+```js
+import(/* webpackMode: "weak" */ "./weak-dependency.js")
+```
 
-## Usages
+Expected behavior: the weak import should not emit a normal async chunk-loader
+request. It should only resolve if the module is already available.
 
-`pnpm run build` would both run Rspack and webpack with config `./rspack.config.mjs`
+Observed behavior: Rspack emits `__webpack_require__.e(...)` for the weak import,
+while webpack does not.
 
-- Rspack will emits output in `./rspack-dist`
-- webpack will emits output in `./webpack-dist`
+## Reproduce
 
-`./webpack-dist` and `./rspack-dist` are purposely not added to `.gitignore`.
+```sh
+pnpm install
+pnpm run build:rspack
+```
 
-It is recommended to commit these files so we quickly compare the outputs.
+Then open `rspack-dist/index.html` in a browser with the network panel open.
+
+Observed Rspack output:
+
+```text
+rspack-dist/main.js contains __webpack_require__.e(...)
+rspack-dist/src_weak-dependency_js.js is requested by the weak import
+```
+
+For comparison:
+
+```sh
+pnpm run build:webpack
+```
+
+webpack does not emit the same normal async chunk-loader request for the weak
+import.
